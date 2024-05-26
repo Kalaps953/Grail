@@ -9,7 +9,7 @@ class DigitalSignal(Signal):
         super().__init__(id, layer)
         self.power = power
 
-    # TODO: __add__, __sub__, comparing and smthg else
+    # TODO: __add__, __sub__, comparing and something else
 
 
 class BooleanSignal(Signal):
@@ -32,16 +32,16 @@ class StringSignal(Signal):
 
     def __lt__(self, other):
         if isinstance(other, str):
-            return other < self.text
+            return self.text < other
         if isinstance(other, StringSignal):
-            return other.text < self.text
+            return self.text < other.text
         raise TypeError(f'comparing \'{type(other)}\' to \'StringSignal\'')
 
     def __gt__(self, other):
         if isinstance(other, str):
-            return other > self.text
+            return self.text > other
         if isinstance(other, StringSignal):
-            return other.text > self.text
+            return self.text > other.text
         raise TypeError(f'comparing \'{type(other)}\' to \'StringSignal\'')
 
     def __eq__(self, other):
@@ -49,20 +49,20 @@ class StringSignal(Signal):
             return other == self.text
         if isinstance(other, StringSignal):
             return other.text == self.text
-        raise TypeError(f'comparing \'{type(other)}\' to \'StringSignal\'')
+        return False
 
     def __ge__(self, other):
         if isinstance(other, str):
-            return other >= self.text
+            return self.text >= other
         if isinstance(other, StringSignal):
-            return other.text >= self.text
+            return self.text >= other.text
         raise TypeError(f'comparing \'{type(other)}\' to \'StringSignal\'')
 
     def __le__(self, other):
         if isinstance(other, str):
-            return other <= self.text
+            return self.text <= other
         if isinstance(other, StringSignal):
-            return other.text <= self.text
+            return self.text <= other.text
         raise TypeError(f'comparing \'{type(other)}\' to \'StringSignal\'')
 
     def __len__(self):
