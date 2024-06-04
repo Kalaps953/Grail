@@ -1,6 +1,8 @@
-from .signal import Signal
+from __future__ import annotations
+import classes.signal as sg
 import pygame as pg
 import math
+import abstraction as abst
 
 
 class Pos:
@@ -102,12 +104,23 @@ class Pos:
         elif isinstance(other, int):
             return self.x >= other and self.y >= other
 
+    def __eq__(self, other):
+        if isinstance(other, Pos):
+            return other.x == self.x and other.y == self.y
+
 
 class Cell:
-    def __init__(self, pos: Pos, blocks: dict[int, "Block"] = {}, signals: dict[int, Signal] = {}):
-        self.pos = pos
+    def __init__(self, pos: Pos, blocks: dict[int, Block] = {}, signals: dict[int, sg.Signal] = {}):
+        self._pos = pos
         self._blocks = blocks
         self.signals = signals
+        for i in self._blocks.keys():
+            self._blocks[i].cell = self
+        for i in self.signals.keys():
+            self.signals[i].cell = self
+
+    def __str__(self):
+        return f'{self._pos}'
 
     def place_block(self, obj, layer: int = 0) -> None:
         self._blocks[layer] = obj
@@ -116,12 +129,16 @@ class Cell:
         self._blocks.pop(layer)
 
     @property
-    def blocks(self) -> dict[int, "Block"]:
+    def blocks(self) -> dict[int, Block]:
         return self._blocks
+
+    @property
+    def pos(self) -> Pos:
+        return self._pos
 
 
 class Grid:
-    def __init__(self, cells: list[Cell]):
+    def __init__(self, cells: list[Cell] = []):
         self.cells = cells
 
     def get_cell(self, pos: Pos):
@@ -130,16 +147,46 @@ class Grid:
                 return i
         return Cell(pos)
 
-    def set_cell(self, pos: Pos, cell: Cell):
+    def set_cell(self, cell: Cell):
         for i in range(len(self.cells)):
-            if self.cells[i].pos == pos:
+            if self.cells[i].pos == cell.pos:
                 self.cells[i] = cell
                 return
         self.cells.append(cell)
 
 
 class Block:
-    def __init__(self, cell: Cell, layer: int = 0):
+    def __init__(self, cell: Cell = None, layer: int = 0):
         self.cell = cell
         self.layer = layer
 
+
+class ArrowBlock(Block, abst.SignalInteractBlock):
+    def __init__(self, cell: Cell = None, layer: int = 0, direct: int = 0):
+        super().__init__(cell, layer)
+        if direct < 0 or direct > 3:
+            raise ValueError('ArrowBlock.direct have to be in range from 0 to 3')
+        self._direct = direct
+
+    def on_signal(self, signal: sg.Signal):
+        match self._direct:
+            case 0:
+                signal.vector = Pos(0, 1)
+            case 1:
+                signal.vector = Pos(1, 0)
+            case 2:
+                signal.vector = Pos(0, -1)
+            case 3:
+                signal.vector = Pos(-1, 0)
+            case _:
+                raise ValueError('ArrowBlock.direct have to be in range from 0 to 3')
+
+    @property
+    def direct(self):
+        return self._direct
+
+    @direct.setter
+    def direct(self, value):
+        if value < 0 or value > 3:
+            raise ValueError('ArrowBlock.direct have to be in range from 0 to 3')
+        self._direct = value

@@ -1,27 +1,56 @@
+import classes.blocks as bl
+
+
 class Signal:
-    def __init__(self, id: int = 0, layer: int = 0):
+    def __init__(self,
+                 cell: bl.Cell = None,
+                 id: int = 0,
+                 layer: int = 0,
+                 vector: bl.Pos = bl.Pos(0, 1)):
+        self.cell = cell
         self.id = id
         self.layer = layer
+        self.vector = vector
+
+    def update(self, grid: bl.Grid):
+        self.cell.signals.pop(self.layer)
+        self.cell = grid.get_cell(self.cell.pos + self.vector)
+        self.cell.signals[self.layer] = self
 
 
 class DigitalSignal(Signal):
-    def __init__(self, power: int = 0, id: int = 0, layer: int = 0):
-        super().__init__(id, layer)
+    def __init__(self, cell: bl.Cell = None, power: int = 0, id: int = 0, layer: int = 0, vector: bl.Pos = bl.Pos(0, 1)):
+        super().__init__(cell, id, layer, vector)
         self.power = power
+
+    def update(self, grid: bl.Grid):
+        self.cell.signals.pop(self.layer)
+        self.cell = grid.get_cell(self.cell.pos + self.vector)
+        self.cell.signals[self.layer] = self
 
     # TODO: __add__, __sub__, comparing and something else
 
 
 class BooleanSignal(Signal):
-    def __init__(self, state: bool = False, id: int = 0, layer: int = 0):
+    def __init__(self, cell: bl.Cell = None, state: bool = False, id: int = 0, layer: int = 0, vector: bl.Pos = bl.Pos(0, 1)):
+        super().__init__(cell, id, layer, vector)
         self.state = state
-        super().__init__(id, layer)
+
+    def update(self, grid: bl.Grid):
+        self.cell.signals.pop(self.layer)
+        self.cell = grid.get_cell(self.cell.pos + self.vector)
+        self.cell.signals[self.layer] = self
 
 
 class StringSignal(Signal):
-    def __init__(self, text: str = '', id: int = 0, layer: int = 0):
+    def __init__(self, cell: bl.Cell = None, text: str = '', id: int = 0, layer: int = 0, vector: bl.Pos = bl.Pos(0, 1)):
+        super().__init__(cell, id, layer, vector)
         self.text = text
-        super().__init__(id, layer)
+
+    def update(self, grid: bl.Grid):
+        self.cell.signals.pop(self.layer)
+        self.cell = grid.get_cell(self.cell.pos + self.vector)
+        self.cell.signals[self.layer] = self
 
     def __add__(self, other):
         if isinstance(other, str):
