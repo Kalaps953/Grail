@@ -1,5 +1,5 @@
 from __future__ import annotations
-import classes.signal as sg
+import grailLogicModule.signal as sg
 import pygame as pg
 import math
 import abstraction as abst
@@ -64,9 +64,9 @@ class Pos:
         if isinstance(power, Pos):
             return Pos(math.pow(self.x, power.x), math.pow(self.y, power.y))
         elif isinstance(power, float):
-            return Pos(math.pow(self.x,  power), math.pow(self.y, power))
+            return Pos(math.pow(self.x, power), math.pow(self.y, power))
         elif isinstance(power, int):
-            return Pos(math.pow(self.x,  power), math.pow(self.y, power))
+            return Pos(math.pow(self.x, power), math.pow(self.y, power))
 
     # <
     def __lt__(self, other):

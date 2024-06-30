@@ -1,4 +1,4 @@
-import classes.blocks as bl
+import grailLogicModule.blocks as bl
 
 
 class Signal:

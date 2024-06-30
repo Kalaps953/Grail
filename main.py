@@ -1,2 +1,3 @@
-import classes as cl
+import grailLogicModule as cl
+
 

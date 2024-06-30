@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-import classes.signal as sg
-import classes.blocks as bl
+import grailLogicModule.signal as sg
+import grailLogicModule.blocks as bl
 
 
 class SignalInteractBlock(ABC):
